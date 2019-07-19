@@ -33,6 +33,7 @@
 		regulator-max-microvolt = <12000000>;
 	};
 
+	/* switched by pmic_sleep */
 	vcc1v8_s3: vcca1v8_s3: vcc1v8-s3 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc1v8_s3";
@@ -103,6 +104,13 @@
 		vin-supply = <&dc_12v>;
 	};
 
+	vcc_phy: vcc-phy-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_phy";
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
 	vcc_sys: vcc-sys {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_sys";
@@ -159,7 +167,7 @@
 	assigned-clocks = <&cru SCLK_RMII_SRC>;
 	assigned-clock-parents = <&clkin_gmac>;
 	clock_in_out = "input";
-	phy-supply = <&vcc3v3_s3>;
+	phy-supply = <&vcc_phy>;
 	phy-mode = "rgmii";
 	pinctrl-names = "default";
 	pinctrl-0 = <&rgmii_pins>;
@@ -186,6 +194,7 @@
 		clock-output-names = "xin32k", "rk808-clkout2";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pmic_int_l>;
+		dvs-gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_HIGH>;
 		rockchip,system-power-controller;
 		wakeup-source;
 
@@ -259,8 +268,8 @@
 				};
 			};
 
-			vcc3v0_tp: LDO_REG2 {
-				regulator-name = "vcc3v0_tp";
+			vcc3v0_dvp: LDO_REG2 {
+				regulator-name = "vcc3v0_dvp";
 				regulator-always-on;
 				regulator-boot-on;
 				regulator-min-microvolt = <3000000>;
@@ -282,15 +291,15 @@
 				};
 			};
 
-			vcc_sd: LDO_REG4 {
-				regulator-name = "vcc_sd";
+			vcc_sdio: LDO_REG4 {
+				regulator-name = "vcc_sdio";
 				regulator-always-on;
 				regulator-boot-on;
 				regulator-min-microvolt = <1800000>;
-				regulator-max-microvolt = <3000000>;
+				regulator-max-microvolt = <3300000>;
 				regulator-state-mem {
 					regulator-on-in-suspend;
-					regulator-suspend-microvolt = <3000000>;
+					regulator-suspend-microvolt = <3300000>;
 				};
 			};
 
@@ -364,13 +373,16 @@
 		compatible = "silergy,syr827";
 		reg = <0x40>;
 		fcs,suspend-voltage-selector = <0>;
+		regulator-initial-state = <3>;
 		regulator-name = "vdd_cpu_b";
 		regulator-min-microvolt = <712500>;
 		regulator-max-microvolt = <1500000>;
-		regulator-ramp-delay = <1000>;
+		regulator-ramp-delay = <40000>;
 		regulator-always-on;
 		regulator-boot-on;
-		vin-supply = <&vcc5v0_sys>;
+		vsel-gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
+		regulator-compatible = "fan53555-reg";
+		vin-supply = <&vcc3v3_sys>;
 
 		regulator-state-mem {
 			regulator-off-in-suspend;
@@ -381,12 +393,14 @@
 		compatible = "silergy,syr828";
 		reg = <0x41>;
 		fcs,suspend-voltage-selector = <1>;
+		regulator-initial-state = <3>;
 		regulator-name = "vdd_gpu";
 		regulator-min-microvolt = <712500>;
 		regulator-max-microvolt = <1500000>;
 		regulator-ramp-delay = <1000>;
 		regulator-always-on;
 		regulator-boot-on;
+		regulator-compatible = "fan53555-reg";
 		vin-supply = <&vcc5v0_sys>;
 
 		regulator-state-mem {
@@ -414,6 +428,7 @@
 };
 
 &i2s0 {
+	rockchip,i2s-broken-burst-len;
 	rockchip,playback-channels = <8>;
 	rockchip,capture-channels = <8>;
 	#sound-dai-cells = <0>;
@@ -421,6 +436,7 @@
 };
 
 &i2s1 {
+	rockchip,i2s-broken-burst-len;
 	rockchip,playback-channels = <2>;
 	rockchip,capture-channels = <2>;
 	#sound-dai-cells = <0>;
@@ -437,7 +453,7 @@
 
 	bt656-supply = <&vcc1v8_dvp>;
 	audio-supply = <&vcca1v8_codec>;
-	sdmmc-supply = <&vcc_sd>;
+	sdmmc-supply = <&vcc_sdio>;
 	gpio1830-supply = <&vcc_3v0>;
 };
 
@@ -446,8 +462,12 @@
 };
 
 &pcie0 {
+	assigned-clocks = <&cru SCLK_PCIEPHY_REF>;
+	assigned-clock-parents = <&cru SCLK_PCIEPHY_REF100M>;
+	assigned-clock-rates = <100000000>;
 	ep-gpios = <&gpio2 RK_PC2 GPIO_ACTIVE_HIGH>;
 	num-lanes = <1>;
+	max-link-speed = <2>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pcie_clkreqn>;
 	status = "okay";
@@ -473,7 +493,7 @@
 
 	pmic {
 		vsel1_gpio: vsel1-gpio {
-			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 
 		vsel2_gpio: vsel2-gpio {
@@ -483,6 +503,10 @@
 		pmic_int_l: pmic-int-l {
 			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
+
+		pmic_dvs2: pmic-dvs2 {
+			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
 	};
 
 	usb2 {
@@ -490,11 +514,11 @@
 			rockchip,pins = <4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
-	host31_vbus_drv: host31-vbus-drv {
+		host31_vbus_drv: host31-vbus-drv {
 			rockchip,pins = <0 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
-	host32_vbus_drv: host32-vbus-drv {
+		host32_vbus_drv: host32-vbus-drv {
 			rockchip,pins =	<0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
@@ -511,10 +535,6 @@
 &saradc {
 	vref-supply = <&vcca1v8_s3>;
 	status = "okay";
-};
-
-&sdio0 {
-        status = "disabled";
 };
 
 &sdmmc {
