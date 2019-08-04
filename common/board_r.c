@@ -49,6 +49,9 @@
 #include <linux/err.h>
 #include <efi_loader.h>
 #include <wdt.h>
+#if defined(CONFIG_GPIO_HOG)
+#include <asm/gpio.h>
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -697,7 +700,7 @@ static init_fnc_t init_sequence_r[] = {
 	stdio_init_tables,
 	initr_serial,
 	initr_announce,
-#if defined(CONFIG_WDT)
+#if CONFIG_IS_ENABLED(WDT)
 	initr_watchdog,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
@@ -795,6 +798,9 @@ static init_fnc_t init_sequence_r[] = {
 	/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
 	initr_ethaddr,
+#endif
+#if defined(CONFIG_GPIO_HOG)
+	gpio_hog_probe_all,
 #endif
 #ifdef CONFIG_BOARD_LATE_INIT
 	board_late_init,

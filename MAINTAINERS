@@ -94,6 +94,7 @@ M:	Simon Goldschmidt <simon.k.r.goldschmidt@gmail.com>
 S:	Maintainted
 T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-socfpga.git
 F:	arch/arm/mach-socfpga/
+F:	drivers/sysreset/sysreset_socfpga*
 
 ARM AMLOGIC SOC SUPPORT
 M:	Neil Armstrong <narmstrong@baylibre.com>
@@ -205,7 +206,7 @@ F:	drivers/mmc/mtk-sd.c
 F:	drivers/pinctrl/mediatek/
 F:	drivers/power/domain/mtk-power-domain.c
 F:	drivers/ram/mediatek/
-F:	drivers/spi/mtk_qspi.c
+F:	drivers/spi/mtk_snfi_spi.c
 F:	drivers/timer/mtk_timer.c
 F:	drivers/watchdog/mtk_wdt.c
 F:	drivers/net/mtk_eth.c
@@ -297,10 +298,12 @@ ARM STM STM32MP
 M:	Patrick Delaunay <patrick.delaunay@st.com>
 M:	Patrice Chotard <patrice.chotard@st.com>
 L:	uboot-stm32@st-md-mailman.stormreply.com (moderated for non-subscribers)
+T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-stm
 S:	Maintained
 F:	arch/arm/mach-stm32mp/
 F:	drivers/clk/clk_stm32mp1.c
 F:	drivers/i2c/stm32f7_i2c.c
+F:	drivers/mailbox/stm32-ipcc.c
 F:	drivers/misc/stm32mp_fuse.c
 F:	drivers/mmc/stm32_sdmmc2.c
 F:	drivers/phy/phy-stm32-usbphyc.c
@@ -309,6 +312,7 @@ F:	drivers/power/pmic/stpmic1.c
 F:	drivers/power/regulator/stm32-vrefbuf.c
 F:	drivers/power/regulator/stpmic1.c
 F:	drivers/ram/stm32mp1/
+F:	drivers/remoteproc/stm32_copro.c
 F:	drivers/misc/stm32_rcc.c
 F:	drivers/reset/stm32-reset.c
 F:	drivers/spi/stm32_qspi.c
@@ -441,6 +445,13 @@ S:	Maintained
 T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-cfi-flash.git
 F:	drivers/mtd/cfi_flash.c
 F:	drivers/mtd/jedec_flash.c
+
+CLOCK
+M:	Lukasz Majewski <lukma@denx.de>
+S:	Maintained
+T:	git git://git.denx.de/u-boot-dfu.git
+F:	drivers/clk/
+F:	drivers/clk/imx/
 
 COLDFIRE
 M:	Huan Wang <alison.wang@nxp.com>
@@ -604,7 +615,7 @@ T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-nand-flash.git
 F:	drivers/mtd/nand/raw/
 
 NDS32
-M:	Macpaul Lin <macpaul@andestech.com>
+M:	Rick Chen <rick@andestech.com>
 S:	Maintained
 T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-nds32.git
 F:	arch/nds32/
@@ -614,6 +625,7 @@ M:	Joe Hershberger <joe.hershberger@ni.com>
 S:	Maintained
 T:	git https://gitlab.denx.de/u-boot/custodians/u-boot-net.git
 F:	drivers/net/
+F:	include/net.h
 F:	net/
 
 NIOS
@@ -632,6 +644,12 @@ PATMAN
 M:	Simon Glass <sjg@chromium.org>
 S:	Maintained
 F:	tools/patman/
+
+PCI Endpoint
+M:	Ramon Fried <rfried.dev@gmail.com>
+S:	Maintained
+F:	drivers/pci_endpoint/
+F:  include/pci_ep.h
 
 POWER
 M:	Jaehoon Chung <jh80.chung@samsung.com>
@@ -767,6 +785,11 @@ S:	Maintained
 F:	drivers/tee/
 F:	include/tee.h
 F:	include/tee/
+
+TEE-lib
+M:	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+S:	Maintained
+F:	lib/optee
 
 UBI
 M:	Kyungmin Park <kmpark@infradead.org>

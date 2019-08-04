@@ -69,6 +69,13 @@ config SPL_BOOTSTAGE_RECORD_COUNT
 	  This is the size of the bootstage record list and is the maximum
 	  number of bootstage records that can be recorded.
 
+config TPL_BOOTSTAGE_RECORD_COUNT
+	int "Number of boot stage records to store for TPL"
+	default 5
+	help
+	  This is the size of the bootstage record list and is the maximum
+	  number of bootstage records that can be recorded.
+
 config BOOTSTAGE_FDT
 	bool "Store boot timing information in the OS device tree"
 	depends on BOOTSTAGE
@@ -813,6 +820,16 @@ config UPDATE_TFTP_MSEC_MAX
 	int "Delay in mSec to wait for the TFTP server during auto-update"
 	default 100
 	depends on UPDATE_TFTP
+
+config ANDROID_AB
+	bool "Android A/B updates"
+	default n
+	help
+	  If enabled, adds support for the new Android A/B update model. This
+	  allows the bootloader to select which slot to boot from based on the
+	  information provided by userspace via the Android boot_ctrl HAL. This
+	  allows a bootloader to try a new version of the system but roll back
+	  to previous version if the new one didn't boot all the way.
 
 endmenu
 

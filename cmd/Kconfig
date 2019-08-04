@@ -325,14 +325,22 @@ config CMD_SPL
 	  command.
 
 config CMD_SPL_NAND_OFS
-	hex "Offset of OS command line args for Falcon-mode NAND boot"
-	depends on CMD_SPL
+	hex "Offset of OS args or dtb for Falcon-mode NAND boot"
+	depends on CMD_SPL && (TPL_NAND_SUPPORT || SPL_NAND_SUPPORT)
 	default 0
 	help
 	  This provides the offset of the command line arguments for Linux
 	  when booting from NAND in Falcon mode.  See doc/README.falcon
 	  for full information about how to use this option (and also see
 	  board/gateworks/gw_ventana/README for an example).
+
+config CMD_SPL_NOR_OFS
+	hex "Offset of OS args or dtb for Falcon-mode NOR boot"
+	depends on CMD_SPL && SPL_NOR_SUPPORT
+	default 0
+	help
+	  This provides the offset of the command line arguments or dtb for
+	  Linux when booting from NOR in Falcon mode.
 
 config CMD_SPL_WRITE_SIZE
 	hex "Size of argument area"
@@ -408,6 +416,14 @@ config CMD_SAVEENV
 	  Save all environment variables into the compiled-in persistent
 	  storage.
 
+config CMD_ERASEENV
+	bool "eraseenv"
+	default n
+	depends on CMD_SAVEENV
+	help
+	  Erase environment variables from the compiled-in persistent
+	  storage.
+
 config CMD_ENV_EXISTS
 	bool "env exists"
 	default y
@@ -440,6 +456,19 @@ config CMD_NVEDIT_EFI
 	  UEFI variables are encoded as some form of U-Boot variables.
 	  If enabled, we are allowed to set/print UEFI variables using
 	  "env" command with "-e" option without knowing details.
+
+config CMD_NVEDIT_INFO
+	bool "env info - print or evaluate environment information"
+	help
+	  Print environment information:
+	  - env_valid : is environment valid
+	  - env_ready : is environment imported into hash table
+	  - env_use_default : is default environment used
+
+	  This command can be optionally used for evaluation in scripts:
+	  [-d] : evaluate whether default environment is used
+	  [-p] : evaluate whether environment can be persisted
+	  The result of multiple evaluations will be combined with AND.
 
 endmenu
 
@@ -550,6 +579,13 @@ config CMD_MEMORY
 	    base - print or set address offset
 	    loop - initialize loop on address range
 
+config CMD_RANDOM
+	bool "random"
+	default y
+	depends on CMD_MEMORY && (LIB_RAND || LIB_HW_RAND)
+	help
+	  random - fill memory with random data
+
 config CMD_MEMTEST
 	bool "memtest"
 	help
@@ -631,6 +667,23 @@ config CMD_ADC
 	  Shows ADC device info and permit printing one-shot analog converted
 	  data from a named Analog to Digital Converter.
 
+config CMD_BCB
+	bool "bcb"
+	depends on MMC
+	depends on PARTITIONS
+	help
+	  Read/modify/write the fields of Bootloader Control Block, usually
+	  stored on the flash "misc" partition with its structure defined in:
+	  https://android.googlesource.com/platform/bootable/recovery/+/master/
+	  bootloader_message/include/bootloader_message/bootloader_message.h
+
+	  Some real-life use-cases include (but are not limited to):
+	  - Determine the "boot reason" (and act accordingly):
+	    https://source.android.com/devices/bootloader/boot-reason
+	  - Get/pass a list of commands from/to recovery:
+	    https://android.googlesource.com/platform/bootable/recovery
+	  - Inspect/dump the contents of the BCB fields
+
 config CMD_BIND
 	bool "bind/unbind - Bind or unbind a device to/from a driver"
 	depends on DM
@@ -690,7 +743,7 @@ config CMD_FASTBOOT
 	  Android devices. Fastboot requires either the network stack
 	  enabled or support for acting as a USB device.
 
-	  See doc/README.android-fastboot for more information.
+	  See doc/android/fastboot.txt for more information.
 
 config CMD_FDC
 	bool "fdcboot - Boot from floppy device"
@@ -925,15 +978,6 @@ config CMD_NVME
 	help
 	  NVM Express device support
 
-config CMD_MMC_SPI
-	bool "mmc_spi - Set up MMC SPI device"
-	help
-	  Provides a way to set up an MMC (Multimedia Card) SPI (Serial
-	  Peripheral Interface) device. The device provides a means of
-	  accessing an MMC device via SPI using a single data line, limited
-	  to 20MHz. It is useful since it reduces the amount of protocol code
-	  required.
-
 config CMD_ONENAND
 	bool "onenand - access to onenand device"
 	help
@@ -1159,6 +1203,21 @@ config CMD_SETEXPR
 	    variable.
 	  Also supports loading the value at a memory location into a variable.
 	  If CONFIG_REGEX is enabled, setexpr also supports a gsub function.
+
+endmenu
+
+menu "Android support commands"
+
+config CMD_AB_SELECT
+	bool "ab_select"
+	default n
+	depends on ANDROID_AB
+	help
+	  On Android devices with more than one boot slot (multiple copies of
+	  the kernel and system images) this provides a command to select which
+	  slot should be used to boot from and register the boot attempt. This
+	  is used by the new A/B update model where one slot is updated in the
+	  background while running from the other slot.
 
 endmenu
 

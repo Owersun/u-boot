@@ -212,7 +212,7 @@ board. This allows feature development which is not board- or architecture-
 specific to be undertaken on a native platform. The sandbox is also used to
 run some of U-Boot's tests.
 
-See board/sandbox/README.sandbox for more details.
+See doc/arch/index.rst for more details.
 
 
 Board Initialisation Flow:
@@ -959,10 +959,6 @@ The following options need to be configured:
 
 			CONFIG_SH_ETHER_CACHE_WRITEBACK
 			If this option is set, the driver enables cache flush.
-
-- PWM Support:
-		CONFIG_PWM_IMX
-		Support for PWM module on the imx6.
 
 - TPM Support:
 		CONFIG_TPM

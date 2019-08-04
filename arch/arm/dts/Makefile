@@ -30,7 +30,8 @@ dtb-$(CONFIG_EXYNOS7420) += exynos7420-espresso7420.dtb
 
 dtb-$(CONFIG_ARCH_DAVINCI) += \
 	da850-evm.dtb \
-	da850-lcdk.dtb
+	da850-lcdk.dtb \
+	da850-lego-ev3.dtb
 
 dtb-$(CONFIG_KIRKWOOD) += \
 	kirkwood-atl-sbx81lifkw.dtb \
@@ -289,7 +290,8 @@ dtb-$(CONFIG_AM33XX) += \
 	am335x-chiliboard.dtb \
 	am335x-sl50.dtb \
 	am335x-base0033.dtb \
-	am335x-guardian.dtb
+	am335x-guardian.dtb \
+	am335x-wega-rdk.dtb
 dtb-$(CONFIG_AM43XX) += am437x-gp-evm.dtb am437x-sk-evm.dtb	\
 	am43x-epos-evm.dtb \
 	am437x-idk-evm.dtb \
@@ -327,7 +329,7 @@ dtb-$(CONFIG_TARGET_STV0991) += stv0991.dtb
 dtb-$(CONFIG_ARCH_LS1021A) += ls1021a-qds-duart.dtb \
 	ls1021a-qds-lpuart.dtb \
 	ls1021a-twr-duart.dtb ls1021a-twr-lpuart.dtb \
-	ls1021a-iot-duart.dtb
+	ls1021a-iot-duart.dtb ls1021a-tsn.dtb
 dtb-$(CONFIG_FSL_LSCH3) += fsl-ls2080a-qds.dtb \
 	fsl-ls2080a-rdb.dtb \
 	fsl-ls2081a-rdb.dtb \
@@ -481,6 +483,7 @@ dtb-$(CONFIG_MACH_SUN8I_H3) += \
 	sun8i-h2-plus-orangepi-r1.dtb \
 	sun8i-h2-plus-orangepi-zero.dtb \
 	sun8i-h3-bananapi-m2-plus.dtb \
+	sun8i-h3-beelink-x2.dtb \
 	sun8i-h3-libretech-all-h3-cc.dtb \
 	sun8i-h3-nanopi-m1.dtb \
 	sun8i-h3-nanopi-m1-plus.dtb \
@@ -549,6 +552,7 @@ dtb-$(CONFIG_MX6Q) += \
 	imx6q-tbs2910.dtb
 
 dtb-$(CONFIG_MX6QDL) += \
+	imx6dl-dhcom-pdk2.dtb \
 	imx6dl-icore.dtb \
 	imx6dl-icore-mipi.dtb \
 	imx6dl-icore-rqs.dtb \
@@ -557,6 +561,7 @@ dtb-$(CONFIG_MX6QDL) += \
 	imx6dl-sabresd.dtb \
 	imx6dl-wandboard-revb1.dtb \
 	imx6q-cm-fx6.dtb \
+	imx6q-dhcom-pdk2.dtb \
 	imx6q-icore.dtb \
 	imx6q-icore-mipi.dtb \
 	imx6q-icore-rqs.dtb \
@@ -597,8 +602,7 @@ dtb-$(CONFIG_MX6ULL) += \
 
 dtb-$(CONFIG_ARCH_MX6) += \
 	imx6-apalis.dtb \
-	imx6-colibri.dtb \
-	imx6q-dhcom-pdk2.dtb
+	imx6-colibri.dtb
 
 dtb-$(CONFIG_MX7) += imx7d-sdb.dtb \
 	imx7d-sdb-qspi.dtb \
@@ -770,10 +774,13 @@ dtb-$(CONFIG_TARGET_STM32MP1) += \
 	stm32mp157c-ev1.dtb
 
 dtb-$(CONFIG_SOC_K3_AM6) += k3-am654-base-board.dtb k3-am654-r5-base-board.dtb
+dtb-$(CONFIG_SOC_K3_J721E) += k3-j721e-common-proc-board.dtb \
+			      k3-j721e-r5-common-proc-board.dtb
 
 dtb-$(CONFIG_ARCH_MEDIATEK) += \
 	mt7623n-bananapi-bpi-r2.dtb \
-	mt7629-rfb.dtb
+	mt7629-rfb.dtb \
+	mt8516-pumpkin.dtb
 
 dtb-$(CONFIG_TARGET_GE_BX50V3) += imx6q-bx50v3.dtb
 dtb-$(CONFIG_TARGET_MX53PPD) += imx53-ppd.dtb

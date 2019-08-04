@@ -535,7 +535,7 @@ static int spl_load_image(struct spl_image_info *spl_image,
 }
 
 /**
- * boot_from_devices() - Try loading an booting U-Boot from a list of devices
+ * boot_from_devices() - Try loading a booting U-Boot from a list of devices
  *
  * @spl_image: Place to put the image details if successful
  * @spl_boot_list: List of boot devices to try
@@ -603,7 +603,7 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 	spl_board_init();
 #endif
 
-#if defined(CONFIG_SPL_WATCHDOG_SUPPORT) && defined(CONFIG_WDT)
+#if defined(CONFIG_SPL_WATCHDOG_SUPPORT) && CONFIG_IS_ENABLED(WDT)
 	initr_watchdog();
 #endif
 
